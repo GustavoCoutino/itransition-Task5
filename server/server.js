@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = 5001;
 
 const allowedOrigins = [
   "https://itransition-task5-sable.vercel.app",
@@ -26,9 +26,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-app.options("*", cors(corsOptions)); // Handles preflight requests for all routes
-
 app.use(bodyParser.json());
 app.use(express.json());
 
