@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchUserData } from "./api/axios";
 import DataSelection from "./components/DataSelection";
 import Table from "./components/Table";
@@ -43,6 +43,12 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (seed.trim() !== "") {
+      fetchData(pageNumber);
+    }
+  }, [sliderValue, selectedOption, seed]);
+
   const exportToCSV = () => {
     const userList = Array.isArray(users.data) ? users.data : [];
     const dataToExport = userList.map((user) => ({
@@ -77,6 +83,22 @@ function App() {
     }
   };
 
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    let numericValue = 0;
+
+    if (value === "") {
+      numericValue = 0;
+    } else {
+      numericValue = Number(value);
+      if (isNaN(numericValue) || numericValue < 0) {
+        return;
+      }
+    }
+
+    setSliderValue(numericValue);
+  };
+
   return (
     <div className="p-4 pt-8 w-full">
       <DataSelection
@@ -85,7 +107,7 @@ function App() {
         onDropdownChange={setSelectedOption}
         sliderValue={sliderValue}
         onSliderChange={(e) => setSliderValue(e.target.value)}
-        onInputChange={(e) => setSliderValue(Number(e.target.value))}
+        onInputChange={handleInputChange}
         seed={seed}
         onSeedChange={(e) => setSeed(e.target.value)}
         onFetchData={() => fetchData(pageNumber)}

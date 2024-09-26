@@ -4,21 +4,20 @@ import { fakerEN_US, fakerES_MX, fakerFI, fakerEN } from "@faker-js/faker";
 export function generateUserData(region, errorsPerRecord, seed, pageNumber) {
   const faker = getLocale(region);
   const people = [];
+  const rng = seedrandom(seed);
+
   const startIndex = pageNumber === 0 ? 0 : 20 * pageNumber + 1;
   const endIndex = pageNumber == 0 ? startIndex + 20 : startIndex + 10;
 
   for (let index = startIndex; index < endIndex; index++) {
-    const combinedSeed = seed + index;
-    const seedValue = seedrandom(combinedSeed).int32();
+    const seedValue = rng.int32();
     faker.seed(seedValue);
-    const rng = seedrandom(combinedSeed);
 
     const identifier = faker.string.uuid();
     let name = `${faker.person.firstName()} ${faker.person.middleName()} ${faker.person.lastName()}`;
-    let address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${faker.location.state()},  ${faker.location.zipCode()}`;
+    let address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${faker.location.state()}, ${faker.location.zipCode()}`;
     let phone = faker.phone.imei();
     phone = formatPhoneNumber(phone, region);
-
     const totalErrors = calculateTotalErrors(errorsPerRecord, rng);
 
     ({ name, address, phone } = applyErrorsToData(
@@ -40,6 +39,7 @@ function applyErrorsToData(name, address, phone, totalErrors, region, rng) {
   if (totalErrors === 0) {
     return { name, address, phone };
   }
+
   const fields = ["name", "address", "phone"];
   const errorTypes = ["delete", "add", "swap"];
   const regionChars = getRegionCharacters(region);
