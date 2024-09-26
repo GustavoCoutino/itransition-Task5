@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "itransition-task5-sable.vercel.app",
   methods: "GET,POST,PUT,DELETE",
 };
 
