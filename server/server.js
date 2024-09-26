@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = 10000;
 
 const allowedOrigins = [
   "itransition-task5-sable.vercel.app",
@@ -13,15 +13,15 @@ const allowedOrigins = [
 ];
 
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(
   cors(
     cors({
-      origin: "*",
+      origin: allowedOrigins,
       methods: "GET,POST,PUT,DELETE",
     })
   )
 );
-app.use(bodyParser.json());
 
 app.use("/api", userRoutes);
 
