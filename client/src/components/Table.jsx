@@ -1,5 +1,32 @@
-const Table = ({ users, pageNumber, onNextPage, onPreviousPage }) => {
+import React, { useEffect, useRef, useCallback } from "react";
+
+const Table = ({ users, pageNumber, onLoadMore }) => {
   const userList = Array.isArray(users.data) ? users.data : [];
+
+  const loader = useRef(null);
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        onLoadMore();
+      }
+    },
+    [onLoadMore]
+  );
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: "20px",
+      threshold: 0,
+    };
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (loader.current) observer.observe(loader.current);
+
+    return () => {
+      if (loader.current) observer.unobserve(loader.current);
+    };
+  }, [handleObserver]);
+
   return (
     <div className="mt-4">
       <div className="overflow-x-auto">
@@ -24,22 +51,8 @@ const Table = ({ users, pageNumber, onNextPage, onPreviousPage }) => {
           </tbody>
         </table>
       </div>
-
-      <div className="mt-4 flex justify-between">
-        <button
-          className="bg-gray-300 text-black px-4 py-2 rounded"
-          onClick={onPreviousPage}
-          disabled={pageNumber === 0}
-        >
-          Previous
-        </button>
-        <span className="text-sm font-medium">Page {pageNumber}</span>
-        <button
-          className="bg-gray-300 text-black px-4 py-2 rounded"
-          onClick={onNextPage}
-        >
-          Next
-        </button>
+      <div ref={loader} className="text-center py-4">
+        <span>Loading more...</span>
       </div>
     </div>
   );
