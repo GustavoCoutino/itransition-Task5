@@ -18,22 +18,32 @@ function App() {
   const [sliderValue, setSliderValue] = useState(1);
   const [selectedOption, setSelectedOption] = useState(defaultOption);
   const [seed, setSeed] = useState("");
-  const [pageNumber, setPageNumber] = useState(0);
   const [isBottom, setIsBottom] = useState(false);
 
-  const fetchData = async (newPageNumber = pageNumber) => {
+  const fetchData = async (mode = "replace") => {
     setLoading(true);
     setError(null);
 
     try {
+      const recordCount = mode === "append" ? 10 : 20;
+      const startIndex = mode === "append" ? users.length : 0;
       const data = await fetchUserData(
         selectedOption.value,
         sliderValue,
         seed,
-        newPageNumber
+        startIndex,
+        recordCount
       );
-      setUsers(data);
-      setPageNumber(newPageNumber);
+
+      if (mode === "append") {
+        setUsers((prevUsers) => ({
+          ...data,
+          data: [...(prevUsers.data || []), ...data.data],
+        }));
+      } else {
+        setUsers(data);
+      }
+
       if (seed === "") {
         setSeed(data.seed);
       }
@@ -46,7 +56,7 @@ function App() {
 
   useEffect(() => {
     if (seed.trim() !== "") {
-      fetchData(pageNumber);
+      fetchData();
     }
   }, [sliderValue, selectedOption, seed]);
 
@@ -57,7 +67,6 @@ function App() {
       Name: user.name,
       Address: user.address,
       Phone: user.phone,
-      Page: pageNumber,
     }));
 
     const fields = ["ID", "Name", "Address", "Phone", "Page"];
@@ -68,20 +77,10 @@ function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `user_data_page_${pageNumber}.csv`);
+    link.setAttribute("download", `user_data.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  const handleNextPage = () => {
-    fetchData(pageNumber + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (pageNumber > 0) {
-      fetchData(pageNumber - 1);
-    }
   };
 
   const handleInputChange = (e) => {
@@ -96,26 +95,31 @@ function App() {
         return;
       }
     }
-
     setSliderValue(numericValue);
   };
 
-  const checkScrollToBottom = () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    if (scrollTop + windowHeight >= documentHeight - 10) {
-      setIsBottom(true);
-    } else {
-      setIsBottom(false);
+  useEffect(() => {
+    if (isBottom && !loading) {
+      fetchData("append");
     }
-  };
+  }, [isBottom, loading]);
 
   useEffect(() => {
-    window.addEventListener("scroll", checkScrollToBottom);
-    return () => {
-      window.removeEventListener("scroll", checkScrollToBottom);
+    const handleScroll = () => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      if (scrollTop + windowHeight >= documentHeight - 10) {
+        setIsBottom(true);
+      } else {
+        setIsBottom(false);
+      }
     };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -129,7 +133,7 @@ function App() {
         onInputChange={handleInputChange}
         seed={seed}
         onSeedChange={(e) => setSeed(e.target.value)}
-        onFetchData={() => fetchData(pageNumber)}
+        onFetchData={() => fetchData()}
         exportToCSV={exportToCSV}
       />
 
@@ -138,12 +142,7 @@ function App() {
         <p className="mt-4 text-red-500">Error fetching data: {error}</p>
       )}
 
-      <Table
-        users={users}
-        pageNumber={pageNumber}
-        onNextPage={handleNextPage}
-        onPreviousPage={handlePreviousPage}
-      />
+      <Table users={users} />
     </div>
   );
 }

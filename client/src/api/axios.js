@@ -7,14 +7,16 @@ export const fetchUserData = async (
   region,
   errorsPerRecord,
   seed,
-  pageNumber
+  startIndex,
+  recordCount
 ) => {
   try {
     const response = await axios.post(`${API_URL}/api`, {
       region,
       errorsPerRecord,
       seed,
-      pageNumber,
+      startIndex,
+      recordCount,
       headers: {
         "Content-Type": "application/json",
       },

@@ -1,16 +1,19 @@
 import seedrandom from "seedrandom";
 import { fakerEN_US, fakerES_MX, fakerFI, fakerEN } from "@faker-js/faker";
 
-export function generateUserData(region, errorsPerRecord, seed, pageNumber) {
+export function generateUserData(
+  region,
+  errorsPerRecord,
+  seed,
+  startIndex = 0,
+  recordCount = 20
+) {
   const faker = getLocale(region);
   const people = [];
-  const combinedSeed = seed + pageNumber;
+  const combinedSeed = seed + region;
   const rng = seedrandom(combinedSeed);
 
-  const startIndex = pageNumber === 0 ? 0 : 20 * pageNumber + 1;
-  const endIndex = pageNumber == 0 ? startIndex + 20 : startIndex + 10;
-
-  for (let index = startIndex; index < endIndex; index++) {
+  for (let index = startIndex; index < startIndex + recordCount; index++) {
     const seedValue = rng.int32();
     faker.seed(seedValue);
 
