@@ -31,11 +31,11 @@ function App() {
         seed,
         newPageNumber
       );
-      setUsers((prev) => ({
-        ...prev,
-        data: [...prev.data, ...data.data],
-      }));
+      setUsers(data);
       setPageNumber(newPageNumber);
+      if (seed === "") {
+        setSeed(data.seed);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -76,9 +76,6 @@ function App() {
       fetchData(pageNumber - 1);
     }
   };
-  const onLoadMore = () => {
-    fetchData(pageNumber + 1);
-  };
 
   return (
     <div className="p-4 pt-8 w-full">
@@ -91,7 +88,8 @@ function App() {
         onInputChange={(e) => setSliderValue(Number(e.target.value))}
         seed={seed}
         onSeedChange={(e) => setSeed(e.target.value)}
-        onFetchData={() => fetchData(0)}
+        onFetchData={() => fetchData(pageNumber)}
+        exportToCSV={exportToCSV}
       />
 
       {loading && <p className="mt-4">Loading data...</p>}
@@ -99,7 +97,12 @@ function App() {
         <p className="mt-4 text-red-500">Error fetching data: {error}</p>
       )}
 
-      <Table users={users} pageNumber={pageNumber} onLoadMore={onLoadMore} />
+      <Table
+        users={users}
+        pageNumber={pageNumber}
+        onNextPage={handleNextPage}
+        onPreviousPage={handlePreviousPage}
+      />
     </div>
   );
 }

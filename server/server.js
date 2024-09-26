@@ -10,6 +10,7 @@ const allowedOrigins = [
   "https://itransition-task5-sable.vercel.app",
   "https://itransition-task5-git-main-gustavocoutinos-projects.vercel.app",
   "https://itransition-task5-6u7vdeoi5-gustavocoutinos-projects.vercel.app",
+  "http://localhost:5173",
 ];
 
 const corsOptions = {
