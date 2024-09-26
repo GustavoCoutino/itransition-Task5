@@ -14,6 +14,10 @@ export const fetchUserData = async (
       errorsPerRecord,
       seed,
       pageNumber,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
     });
 
     return response.data;

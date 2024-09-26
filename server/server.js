@@ -4,24 +4,33 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 const app = express();
-const PORT = 10000;
+const PORT = process.env.PORT || 5001;
 
 const allowedOrigins = [
-  "itransition-task5-sable.vercel.app",
-  "itransition-task5-git-main-gustavocoutinos-projects.vercel.app",
-  "itransition-task5-6u7vdeoi5-gustavocoutinos-projects.vercel.app",
+  "https://itransition-task5-sable.vercel.app",
+  "https://itransition-task5-git-main-gustavocoutinos-projects.vercel.app",
+  "https://itransition-task5-6u7vdeoi5-gustavocoutinos-projects.vercel.app",
 ];
 
-app.use(express.json());
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions)); // Handles preflight requests for all routes
+
 app.use(bodyParser.json());
-app.use(
-  cors(
-    cors({
-      origin: allowedOrigins,
-      methods: "GET,POST,PUT,DELETE",
-    })
-  )
-);
+app.use(express.json());
 
 app.use("/api", userRoutes);
 
