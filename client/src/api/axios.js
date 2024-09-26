@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://itransition-task5-ldy6.onrender.com";
+const API_URL = "https://itransition-task5-j2l0.onrender.com";
 
 export const fetchUserData = async (
   region,
