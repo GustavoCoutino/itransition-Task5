@@ -20,7 +20,6 @@ export const fetchUserData = async (
       },
       withCredentials: true,
     });
-
     return response.data;
   } catch (error) {
     throw error;

@@ -19,6 +19,7 @@ function App() {
   const [selectedOption, setSelectedOption] = useState(defaultOption);
   const [seed, setSeed] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
+  const [isBottom, setIsBottom] = useState(false);
 
   const fetchData = async (newPageNumber = pageNumber) => {
     setLoading(true);
@@ -98,6 +99,24 @@ function App() {
 
     setSliderValue(numericValue);
   };
+
+  const checkScrollToBottom = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    if (scrollTop + windowHeight >= documentHeight - 10) {
+      setIsBottom(true);
+    } else {
+      setIsBottom(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", checkScrollToBottom);
+    return () => {
+      window.removeEventListener("scroll", checkScrollToBottom);
+    };
+  }, []);
 
   return (
     <div className="p-4 pt-8 w-full">

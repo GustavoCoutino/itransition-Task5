@@ -4,7 +4,8 @@ import { fakerEN_US, fakerES_MX, fakerFI, fakerEN } from "@faker-js/faker";
 export function generateUserData(region, errorsPerRecord, seed, pageNumber) {
   const faker = getLocale(region);
   const people = [];
-  const rng = seedrandom(seed);
+  const combinedSeed = seed + pageNumber;
+  const rng = seedrandom(combinedSeed);
 
   const startIndex = pageNumber === 0 ? 0 : 20 * pageNumber + 1;
   const endIndex = pageNumber == 0 ? startIndex + 20 : startIndex + 10;
