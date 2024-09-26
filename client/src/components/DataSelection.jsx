@@ -39,7 +39,7 @@ const DataSelection = ({
         <input
           type="number"
           min="0"
-          max="10"
+          max="1000"
           step="0.5"
           value={sliderValue}
           onChange={onInputChange}
