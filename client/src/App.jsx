@@ -122,6 +122,8 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const totalRecords = Array.isArray(users.data) ? users.data.length : 0;
+
   return (
     <div className="p-4 pt-8 w-full">
       <DataSelection
@@ -141,7 +143,7 @@ function App() {
       {error && (
         <p className="mt-4 text-red-500">Error fetching data: {error}</p>
       )}
-
+      <p className="mt-4">Total Records: {totalRecords}</p>
       <Table users={users} />
     </div>
   );

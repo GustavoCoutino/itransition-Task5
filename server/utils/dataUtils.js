@@ -10,12 +10,11 @@ export function generateUserData(
 ) {
   const faker = getLocale(region);
   const people = [];
-  const combinedSeed = seed + region;
-  const rng = seedrandom(combinedSeed);
+  const rng = seedrandom(seed);
 
   for (let index = startIndex; index < startIndex + recordCount; index++) {
     const seedValue = rng.int32();
-    faker.seed(seedValue);
+    faker.seed(`${seedValue}-${index}`);
 
     const identifier = faker.string.uuid();
     let name = `${faker.person.firstName()} ${faker.person.middleName()} ${faker.person.lastName()}`;
