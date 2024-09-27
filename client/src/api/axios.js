@@ -7,7 +7,9 @@ export const fetchUserData = async (
   errorsPerRecord,
   seed,
   startIndex,
-  recordCount
+  recordCount,
+  usersSize,
+  mode
 ) => {
   try {
     const response = await axios.post(`${API_URL}/api`, {
@@ -16,6 +18,8 @@ export const fetchUserData = async (
       seed,
       startIndex,
       recordCount,
+      usersSize,
+      mode,
       headers: {
         "Content-Type": "application/json",
       },

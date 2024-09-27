@@ -6,6 +6,7 @@ const Table = ({ users }) => {
         <table className="min-w-full table-auto border-collapse">
           <thead>
             <tr className="bg-gray-100">
+              <th className="border px-4 py-2">Record Number</th>
               <th className="border px-4 py-2">ID</th>
               <th className="border px-4 py-2">Name</th>
               <th className="border px-4 py-2">Address</th>
@@ -18,6 +19,7 @@ const Table = ({ users }) => {
                 key={`${user.identifier}-${index}`}
                 className="hover:bg-gray-100"
               >
+                <td className="border px-4 py-2">{index + 1}</td>
                 <td className="border px-4 py-2">{user.identifier}</td>
                 <td className="border px-4 py-2">{user.name}</td>
                 <td className="border px-4 py-2">{user.address}</td>

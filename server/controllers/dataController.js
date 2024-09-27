@@ -8,7 +8,18 @@ const generateSevenCharSeed = () => {
 };
 
 export const generateData = (req, res) => {
-  const { region, errorsPerRecord, seed, startIndex, recordCount } = req.body;
+  let {
+    region,
+    errorsPerRecord,
+    seed,
+    startIndex,
+    recordCount,
+    usersSize,
+    mode,
+  } = req.body;
+  if (mode === "append" && usersSize === 20) {
+    seed = seed + usersSize + 5;
+  }
   const rngSeed = seed || generateSevenCharSeed();
   if (!rngSeed || !region || errorsPerRecord < 0) {
     return res.status(400).json({ error: "Invalid input parameters." });
@@ -18,7 +29,8 @@ export const generateData = (req, res) => {
     errorsPerRecord,
     rngSeed,
     startIndex,
-    recordCount
+    recordCount,
+    usersSize
   );
   res.json({
     seed: rngSeed,

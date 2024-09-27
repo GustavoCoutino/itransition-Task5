@@ -32,7 +32,9 @@ function App() {
         sliderValue,
         seed,
         startIndex,
-        recordCount
+        recordCount,
+        Array.isArray(users.data) ? users.data.length : 0,
+        mode === "append" ? "append" : "replace"
       );
 
       if (mode === "append") {
@@ -143,7 +145,6 @@ function App() {
       {error && (
         <p className="mt-4 text-red-500">Error fetching data: {error}</p>
       )}
-      <p className="mt-4">Total Records: {totalRecords}</p>
       <Table users={users} />
     </div>
   );

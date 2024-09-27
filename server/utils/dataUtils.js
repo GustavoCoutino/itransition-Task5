@@ -6,11 +6,13 @@ export function generateUserData(
   errorsPerRecord,
   seed,
   startIndex = 0,
-  recordCount = 20
+  recordCount = 20,
+  usersSize
 ) {
   const faker = getLocale(region);
   const people = [];
-  const combinedSeed = seed + startIndex.toString();
+  const combinedSeed = seed + usersSize;
+
   const rng = seedrandom(combinedSeed);
 
   for (let index = startIndex; index < startIndex + recordCount; index++) {
@@ -32,7 +34,6 @@ export function generateUserData(
       region,
       rng
     ));
-
     people.push({ identifier, index, name, address, phone });
   }
 
