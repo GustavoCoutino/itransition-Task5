@@ -13,10 +13,11 @@ export function generateUserData(
   const people = [];
   const combinedSeed = seed + usersSize;
 
-  const rng = seedrandom(combinedSeed);
+  const rngBaseData = seedrandom(combinedSeed);
+  const rngErrors = seedrandom(combinedSeed + "_errors");
 
   for (let index = startIndex; index < startIndex + recordCount; index++) {
-    const seedValue = rng.int32();
+    const seedValue = rngBaseData.int32();
     faker.seed(seedValue);
 
     const identifier = faker.string.uuid();
@@ -24,7 +25,7 @@ export function generateUserData(
     let address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${faker.location.state()}, ${faker.location.zipCode()}`;
     let phone = faker.phone.imei();
     phone = formatPhoneNumber(phone, region);
-    const totalErrors = calculateTotalErrors(errorsPerRecord, rng);
+    const totalErrors = calculateTotalErrors(errorsPerRecord, rngErrors);
 
     ({ name, address, phone } = applyErrorsToData(
       name,
@@ -32,7 +33,7 @@ export function generateUserData(
       phone,
       totalErrors,
       region,
-      rng
+      rngErrors
     ));
     people.push({ identifier, index, name, address, phone });
   }

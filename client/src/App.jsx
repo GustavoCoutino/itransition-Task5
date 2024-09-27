@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { fetchUserData } from "./api/axios";
 import DataSelection from "./components/DataSelection";
 import Table from "./components/Table";
@@ -19,6 +19,7 @@ function App() {
   const [selectedOption, setSelectedOption] = useState(defaultOption);
   const [seed, setSeed] = useState("");
   const [isBottom, setIsBottom] = useState(false);
+  const initialFetchDone = useRef(false);
 
   const fetchData = async (mode = "replace") => {
     setLoading(true);
@@ -57,7 +58,9 @@ function App() {
   };
 
   useEffect(() => {
-    if (seed.trim() !== "") {
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+    } else {
       fetchData();
     }
   }, [sliderValue, selectedOption, seed]);
@@ -149,5 +152,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
