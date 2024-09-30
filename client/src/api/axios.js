@@ -10,7 +10,7 @@ export const fetchUserData = async (
   endIndex
 ) => {
   try {
-    const response = await axios.post(`${import.meta.env.API_URL}/api`, {
+    const response = await axios.post(`${API_URL}/api`, {
       region,
       errorsPerRecord,
       seed,
