@@ -13,7 +13,7 @@ const DataSelection = ({
   onSeedChange,
   onFetchData,
   exportToCSV,
-  handleFetchDataWithSeed,
+  handleRandomizeSeed,
 }) => {
   return (
     <div className="flex items-center justify-between space-x-4 w-full">
@@ -57,7 +57,7 @@ const DataSelection = ({
         />
         <button
           className="bg-blue-500 text-white px-2 py-1 rounded flex items-center text-sm"
-          onClick={onFetchData}
+          onClick={() => handleRandomizeSeed()}
         >
           <FaRandom className="mr-1" />
           Random

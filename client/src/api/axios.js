@@ -7,19 +7,16 @@ export const fetchUserData = async (
   errorsPerRecord,
   seed,
   startIndex,
-  recordCount,
-  usersSize,
-  mode
+  endIndex
 ) => {
   try {
-    const response = await axios.post(`${API_URL}/api`, {
+    console.log(import.meta);
+    const response = await axios.post(`${import.meta.env.API_URL}/api`, {
       region,
       errorsPerRecord,
       seed,
       startIndex,
-      recordCount,
-      usersSize,
-      mode,
+      endIndex,
       headers: {
         "Content-Type": "application/json",
       },

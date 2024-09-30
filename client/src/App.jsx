@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { fetchUserData } from "./api/axios";
 import DataSelection from "./components/DataSelection";
 import Table from "./components/Table";
@@ -13,56 +13,40 @@ function App() {
   const defaultOption = options[0];
 
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sliderValue, setSliderValue] = useState(1);
   const [selectedOption, setSelectedOption] = useState(defaultOption);
   const [seed, setSeed] = useState("");
   const [isBottom, setIsBottom] = useState(false);
-  const initialFetchDone = useRef(false);
 
-  const fetchData = async (mode = "replace") => {
-    setLoading(true);
+  const generateRandomSeed = () => {
+    return Math.floor(1000000 + Math.random() * 9000000).toString();
+  };
+
+  const fetchData = async (recordCount = 20) => {
+    if (!seed) {
+      return;
+    }
     setError(null);
 
     try {
-      const recordCount = mode === "append" ? 10 : 20;
-      const startIndex = mode === "append" ? users.length : 0;
+      const startIndex = 0;
+      const endIndex = recordCount + (users?.data?.length || 0);
       const data = await fetchUserData(
         selectedOption.value,
         sliderValue,
         seed,
         startIndex,
-        recordCount,
-        Array.isArray(users.data) ? users.data.length : 0,
-        mode === "append" ? "append" : "replace"
+        endIndex
       );
-
-      if (mode === "append") {
-        setUsers((prevUsers) => ({
-          ...data,
-          data: [...(prevUsers.data || []), ...data.data],
-        }));
-      } else {
-        setUsers(data);
-      }
-
-      if (seed === "") {
-        setSeed(data.seed);
-      }
+      setUsers(data);
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!initialFetchDone.current) {
-      initialFetchDone.current = true;
-    } else {
-      fetchData();
-    }
+    fetchData();
   }, [sliderValue, selectedOption, seed]);
 
   const exportToCSV = () => {
@@ -103,16 +87,20 @@ function App() {
     setSliderValue(numericValue);
   };
 
+  const handleRandomizeSeed = () => {
+    const newSeed = generateRandomSeed();
+    setSeed(newSeed);
+  };
+
   useEffect(() => {
-    if (isBottom && !loading) {
-      fetchData("append");
+    if (isBottom) {
+      fetchData(10);
     }
-  }, [isBottom, loading]);
+  }, [isBottom]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
 
@@ -127,8 +115,6 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const totalRecords = Array.isArray(users.data) ? users.data.length : 0;
-
   return (
     <div className="p-4 pt-8 w-full">
       <DataSelection
@@ -142,9 +128,8 @@ function App() {
         onSeedChange={(e) => setSeed(e.target.value)}
         onFetchData={() => fetchData()}
         exportToCSV={exportToCSV}
+        handleRandomizeSeed={handleRandomizeSeed}
       />
-
-      {loading && <p className="mt-4">Loading data...</p>}
       {error && (
         <p className="mt-4 text-red-500">Error fetching data: {error}</p>
       )}

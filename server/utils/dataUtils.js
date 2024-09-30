@@ -5,18 +5,17 @@ export function generateUserData(
   region,
   errorsPerRecord,
   seed,
-  startIndex = 0,
-  recordCount = 20,
-  usersSize
+  startIndex,
+  endIndex
 ) {
   const faker = getLocale(region);
   const people = [];
-  const combinedSeed = seed + usersSize;
+  const combinedSeed = seed + endIndex - startIndex;
 
   const rngBaseData = seedrandom(combinedSeed);
   const rngErrors = seedrandom(combinedSeed + "_errors");
 
-  for (let index = startIndex; index < startIndex + recordCount; index++) {
+  for (let index = startIndex; index < endIndex; index++) {
     const seedValue = rngBaseData.int32();
     faker.seed(seedValue);
 
