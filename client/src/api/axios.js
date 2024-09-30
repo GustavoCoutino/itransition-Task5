@@ -10,7 +10,6 @@ export const fetchUserData = async (
   endIndex
 ) => {
   try {
-    console.log(import.meta);
     const response = await axios.post(`${import.meta.env.API_URL}/api`, {
       region,
       errorsPerRecord,
